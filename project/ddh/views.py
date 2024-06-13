@@ -8,7 +8,7 @@ import qrcode
 from PIL import Image
 from io import BytesIO
 import base64
-from datetime import datetime
+from datetime import datetime,date
 from datetime import timedelta
 # Create your views here.
 def home (request):
@@ -85,14 +85,21 @@ def user_index(request):
         email=Userdata.objects.get(email=request.session['email'])
         print(email)
         try:
+        # if 1==1:
             data=User_pack.objects.get(email_id=email.id)
             x=data.packname
             y=data.pack_status
             startdate=data.datef
             enddate=data.enddat
+            current_date = datetime.now()
+            end_date1 = datetime.combine(enddate, datetime.min.time())
+            r_d=(end_date1-current_date).days
+            print(r_d)
+            print(end_date1)
+            print(current_date)
             id=data.user_id
-            dr=data.days_remaining
-            if data.days_remaining <= 0:
+            dr=r_d
+            if r_d <= 0:
                 data.delete()
                 x=None
                 y=None
