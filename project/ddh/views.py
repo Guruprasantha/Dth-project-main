@@ -57,8 +57,6 @@ def index(request):
             'actu':actu,
             'auser':auser,
             'channel_avl':channel_avl,
-
-
         }
         return render(request,'index.html',context)
      
