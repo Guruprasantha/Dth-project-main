@@ -406,9 +406,36 @@ def pack_channel(request,id):
         d=[]
         for i in all_ch:
             d.append(Combo.objects.all().filter(channelname=i))
-        print('d is printing :',d)
         context={'pack_name':fk,
                  'ex_ch':d,
                  'exis_ch':data
                  }
         return render(request,'pack_channel.html',context)
+    
+def ex_ch(request):
+    if request.method=='POST':
+        extra_channel=request.POST.getlist('selected_channels')
+        excisting_pack=request.POST.get('epackname')
+        e_pack_ch=Pack.objects.all().get(packname=excisting_pack)
+        ex_ch=Combo.objects.all().filter(packname=e_pack_ch)
+        print(ex_ch)
+        for i in ex_ch:
+            print(i.channelname)
+        l=[]
+        for i in extra_channel:
+            d=Combo.objects.all().filter(id=i)
+            l.append(d)
+        for i in ex_ch:
+            d=Combo.objects.all().filter(channelname=i)
+            l.append(d)
+        print(l)
+        data=Pack.objects.all()
+        ex=[]
+        for i in data:
+            ex.append(i.packname)
+        if 'Usertype1'in ex:
+            print('its running')
+        else:
+            print('not happen')
+
+        return HttpResponse('success')
