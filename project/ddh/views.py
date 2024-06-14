@@ -24,7 +24,7 @@ def login(request):
             data=Admin.objects.get(username=uname)
             if data.password==password:
                 request.session ['username'] = uname
-                sweetify.success(request,title="success",text="logged in successfully ..",button="close" )
+                sweetify.success(request,title="success",text="logged in successfully ..",button="close",timer=3000 )
                 return redirect("index")
             else:
                 messages.error(request, "In correct password !!!")
@@ -68,14 +68,14 @@ def register(request):
             data=Userdata.objects.get(email=email)
             if data.password==password:
                 request.session ['email'] = email
-                sweetify.success(request,title="success",text="logged in successfully welcome..",button="close" )
+                # sweetify.success(request,title="success",text="logged in successfully welcome..",button="close",timer=3000 )
                 return redirect('user_index')
                 # return render(request,'home.html',{'session':request.session['email']})
             else:
-                sweetify.error(request,title='Failed',text="incorrect password",button='close')
+                sweetify.error(request,title='Failed',text="incorrect password",button='close',timer=3000)
                 return render (request,'sign-up.html')
         except:
-            sweetify.error(request,title='Failed',text="username not found",button='close')
+            sweetify.error(request,title='Failed',text="username not found",button='close',timer=3000)
             return redirect('register')
 
     return render (request,'sign-up.html')
@@ -159,7 +159,7 @@ def newuser(request):
                 udata.mobileno=mob
                 udata.password=password
                 udata.save() 
-                sweetify.success(request,title='success',text="registered sucessfully",button='close')
+                sweetify.success(request,title='success',text="registered sucessfully",button='close',timer=3000)
                 return redirect('register')
             else:
                 messages.error(request, "Password Must be Same !!!")
@@ -383,3 +383,32 @@ def activate_user(request,id):
         data_a.save()
         print(data_a.pack_status)
         return redirect("user_view")
+
+def pack_channel(request,id):
+    if 'email' in request.session:
+        fk=Pack.objects.get(id=id)
+        data=Combo.objects.all().filter(packname_id=fk.id)
+        ch_list=Combo.objects.all()
+        all_ch=[]
+        p_ch=[]
+        for i in data:
+            p_ch.append(i.channelname)
+        for i in ch_list:
+            all_ch.append(i.channelname)
+        print(all_ch)
+        li=[]
+        s=set(all_ch)
+        all_ch=list(s)
+        for i in p_ch:
+            if i in all_ch:
+                all_ch.remove(i)
+        print(all_ch)
+        d=[]
+        for i in all_ch:
+            d.append(Combo.objects.all().filter(channelname=i))
+        print('d is printing :',d)
+        context={'pack_name':fk,
+                 'ex_ch':d,
+                 'exis_ch':data
+                 }
+        return render(request,'pack_channel.html',context)

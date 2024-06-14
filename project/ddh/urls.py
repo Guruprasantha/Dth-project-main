@@ -22,4 +22,5 @@ urlpatterns=[
     path('payment_done/<str:id>',views.payment_done,name="payment_done"),
     path('user_view',views.user_view,name="user_view"),
     path('activate_user/<str:id>',views.activate_user,name="activate_user"),
+    path('pack_channel/<int:id>',views.pack_channel,name="pack_channel"),
     ] 
