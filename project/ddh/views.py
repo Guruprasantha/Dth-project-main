@@ -10,7 +10,16 @@ from io import BytesIO
 import base64
 from datetime import datetime,date
 from datetime import timedelta
+import string
+import random
 # Create your views here.
+def generate_random_string():
+    # Define the characters to choose from: letters and digits
+    characters = string.ascii_letters + string.digits
+    # Generate a random string
+    random_string = ''.join(random.choice(characters) for _ in range(10))
+    return random_string
+
 def home (request):
 
     return render (request,'virtual-reality.html')
@@ -201,7 +210,7 @@ def add_combo(request):
                 return redirect('add_combo')
                
             except:
-                data=Pack(packname=combo_name,price=0)
+                data=Pack(packname=combo_name,price=0,pack_type="pre_defined")
                 data.save()
                 return redirect('add_channels',id=combo_name)     
         return render(request,"add_combo.html")
@@ -399,13 +408,16 @@ def pack_channel(request,id):
         li=[]
         s=set(all_ch)
         all_ch=list(s)
+        print("first",all_ch)
         for i in p_ch:
             if i in all_ch:
                 all_ch.remove(i)
-        print(all_ch)
+        print("second",all_ch)
         d=[]
         for i in all_ch:
-            d.append(Combo.objects.all().filter(channelname=i))
+            e=Combo.objects.all().filter(channelname=i)
+            d.append(e)
+        print("d is printing",d)
         context={'pack_name':fk,
                  'ex_ch':d,
                  'exis_ch':data
@@ -418,24 +430,38 @@ def ex_ch(request):
         excisting_pack=request.POST.get('epackname')
         e_pack_ch=Pack.objects.all().get(packname=excisting_pack)
         ex_ch=Combo.objects.all().filter(packname=e_pack_ch)
-        print(ex_ch)
-        for i in ex_ch:
-            print(i.channelname)
         l=[]
         for i in extra_channel:
             d=Combo.objects.all().filter(id=i)
             l.append(d)
+        print(l)
         for i in ex_ch:
             d=Combo.objects.all().filter(channelname=i)
             l.append(d)
-        print(l)
+        print("the total channels in adding",l)
         data=Pack.objects.all()
         ex=[]
         for i in data:
             ex.append(i.packname)
-        if 'Usertype1'in ex:
-            print('its running')
-        else:
-            print('not happen')
+        print(ex)
+        pack_new_name=generate_random_string()
+        if pack_new_name in ex:
+            pack_new_name=generate_random_string()
+        new_pack=Pack()
+        new_pack.packname=pack_new_name
+        new_pack.price=0
+        new_pack.pack_type='user_choice'
+        new_pack.save()
+        for i in l:
+            user=Combo()
+            user.packname=new_pack
+            user.channelname=[j.channelname for j in i ]
+            user.channeldes=[j.channeldes for j in i ]
+            user.channelamount=[j.channelamount for j in i ]
+            user.channeltype=[j.channeltype for j in i ]
+            user.channellang=[j.channellang for j in i ]
+            user.save()
 
+
+        
         return HttpResponse('success')

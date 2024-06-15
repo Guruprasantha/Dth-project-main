@@ -18,6 +18,7 @@
         <div class="card-body pt-4 p-3">
           <ul class="list-group">
             {% for i in data %}
+            {% if i.pack_type != 'user_choice' %}
             <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
               <div class="d-flex flex-column">
                 <h3 class="mb-3 text-sm"> PACK NO : {{ forloop.counter }} </h3>
@@ -32,6 +33,7 @@
                 <a class="btn btn-link text-dark px-3 mb-0" href="{% url 'user_view_pack' id=i.id %}"><i class="material-icons text-sm me-2">edit</i>VIEW</a>
               </div>
             </li>
+            {% endif %}
             {% endfor %}
           </ul>
         </div>

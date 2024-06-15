@@ -20,6 +20,7 @@ class Userdata(models.Model):
     
 class Pack(models.Model):
     packname=models.CharField(max_length=100)
+    pack_type=models.CharField(max_length=50)
     price=models.IntegerField()
     
     def __str__(self):
