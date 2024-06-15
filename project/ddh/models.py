@@ -33,6 +33,7 @@ class Combo(models.Model):
     channeldes=models.CharField(max_length=20)
     channelamount=models.IntegerField()
     channeltype=models.CharField(max_length=20)
+    channelty=models.CharField(max_length=20)
 
     def __str__(self):
         return self.channelname

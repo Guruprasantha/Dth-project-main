@@ -14,9 +14,7 @@ import string
 import random
 # Create your views here.
 def generate_random_string():
-    # Define the characters to choose from: letters and digits
     characters = string.ascii_letters + string.digits
-    # Generate a random string
     random_string = ''.join(random.choice(characters) for _ in range(10))
     return random_string
 
@@ -103,12 +101,16 @@ def user_index(request):
             current_date = datetime.now()
             end_date1 = datetime.combine(enddate, datetime.min.time())
             r_d=(end_date1-current_date).days
-            print(r_d)
+            print("printing rd",r_d)
+            print(type(r_d))
             print(end_date1)
             print(current_date)
             id=data.user_id
             dr=r_d
             if r_d <= 0:
+                de=Pack.objects.all().get(packname=data.packname)
+                if de.pack_type == 'user_choice':
+                    de.delete()
                 data.delete()
                 x=None
                 y=None
@@ -234,6 +236,7 @@ def add_channels(request,id):
             data.channeldes=channel_des
             data.channeltype=channel_type
             data.channellang=channel_lang
+            data.channelty='pre_defined'
             d=int(pack_ob.price)
             f=int(channel_price)
             pack_ob.price=d+f
@@ -395,34 +398,40 @@ def activate_user(request,id):
 
 def pack_channel(request,id):
     if 'email' in request.session:
-        fk=Pack.objects.get(id=id)
-        data=Combo.objects.all().filter(packname_id=fk.id)
-        ch_list=Combo.objects.all()
-        all_ch=[]
-        p_ch=[]
-        for i in data:
-            p_ch.append(i.channelname)
-        for i in ch_list:
-            all_ch.append(i.channelname)
-        print(all_ch)
-        li=[]
-        s=set(all_ch)
-        all_ch=list(s)
-        print("first",all_ch)
-        for i in p_ch:
-            if i in all_ch:
-                all_ch.remove(i)
-        print("second",all_ch)
-        d=[]
-        for i in all_ch:
-            e=Combo.objects.all().filter(channelname=i)
-            d.append(e)
-        print("d is printing",d)
-        context={'pack_name':fk,
-                 'ex_ch':d,
-                 'exis_ch':data
-                 }
-        return render(request,'pack_channel.html',context)
+        te=Userdata.objects.get(email=request.session['email'])
+        try:
+            te1=User_pack.objects.get(email_id=te.id)
+            messages.error(request,'PACK IS ALREADY IN ACTIVE SO PLEASE TRY AFTER THE PACK END..')
+            return redirect('user_packs')
+        except:
+            fk=Pack.objects.get(id=id)
+            data=Combo.objects.all().filter(packname_id=fk.id)
+            ch_list=Combo.objects.all()
+            all_ch=[]
+            p_ch=[]
+            for i in data:
+                p_ch.append(i.channelname)
+            for i in ch_list:
+                all_ch.append(i.channelname)
+            print(all_ch)
+            li=[]
+            s=set(all_ch)
+            all_ch=list(s)
+            print("first",all_ch)
+            for i in p_ch:
+                if i in all_ch:
+                    all_ch.remove(i)
+            print("second",all_ch)
+            d=[]
+            for i in all_ch:
+                e=Combo.objects.all().filter(channelname=i)
+                d.append(e)
+            print("d is printing",d)
+            context={'pack_name':fk,
+                     'ex_ch':d,
+                     'exis_ch':data,
+                     }
+            return render(request,'pack_channel.html',context)
     
 def ex_ch(request):
     if request.method=='POST':
@@ -451,17 +460,35 @@ def ex_ch(request):
         new_pack.packname=pack_new_name
         new_pack.price=0
         new_pack.pack_type='user_choice'
-        new_pack.save()
         for i in l:
             user=Combo()
             user.packname=new_pack
-            user.channelname=[j.channelname for j in i ]
-            user.channeldes=[j.channeldes for j in i ]
-            user.channelamount=[j.channelamount for j in i ]
-            user.channeltype=[j.channeltype for j in i ]
-            user.channellang=[j.channellang for j in i ]
+            x=[j.channelname for j in i]
+            user.channelname=str(x[0])
+            x=[j.channeldes for j in i]
+            user.channeldes=str(x[0])
+            x=[j.channelamount for j in i]
+            user.channelamount=int(x[0])
+            new_pack.price+=user.channelamount
+            new_pack.save()
+            x=[j.channeltype for j in i]
+            user.channeltype=str(x[0])
+            x=[j.channellang for j in i]
+            user.channellang=str(x[0])
+            user.channelty='user_defined'
             user.save()
-
+           
+        id=new_pack.id
+        print(id)
+        return redirect('pack_booking',id)
+        
 
         
-        return HttpResponse('success')
+        # return HttpResponse('success')
+
+def channel_view_user(request,id):
+    fk=Pack.objects.get(packname=id)
+    data=Combo.objects.all().filter(packname_id=fk.id)
+    context={'exis_ch':data,
+             'fk':fk}
+    return render(request,'channel_view_user.html',context)

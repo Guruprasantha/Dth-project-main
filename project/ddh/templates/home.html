@@ -174,7 +174,11 @@
                       <h6 class="mb-0">Pack date details</h6>
                     </div>
                     <div class="col-6 text-end">
-                      <a class="btn bg-gradient-dark mb-0" href="javascript:;"><i class="material-icons text-sm">add</i>  {{ x }}  </a>
+                      {% if x is not none  %}
+                      <a class="btn bg-gradient-dark mb-0" href="{% url 'channel_view_user' id=x %}"><i class="material-icons text-sm">add</i>  {{ x }}  </a>
+                      {% else %}
+                      <a class="btn bg-gradient-dark mb-0" href="#"><i class="material-icons text-sm">add</i>  No pack is selected  </a>
+                      {% endif %}
                     </div>
                   </div>
                 </div>

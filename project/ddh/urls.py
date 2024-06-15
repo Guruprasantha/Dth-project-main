@@ -24,4 +24,5 @@ urlpatterns=[
     path('activate_user/<str:id>',views.activate_user,name="activate_user"),
     path('pack_channel/<int:id>',views.pack_channel,name="pack_channel"),
     path('ex_ch',views.ex_ch,name='ex_ch'),
+    path('channel_view_user/<str:id>',views.channel_view_user,name="channel_view_user"),
     ] 

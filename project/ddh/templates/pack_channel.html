@@ -40,6 +40,7 @@
             </thead>
             <tbody>
               {% for i in exis_ch %}
+              {% if i.channelty == 'pre_defined' %}
               <tr>
                 <td class="text-center">
                   <p class="text-xs font-weight-bold mb-0">{{ forloop.counter }} </p>
@@ -71,6 +72,7 @@
                   {% endif %}
           
               </tr>
+              {% endif %}
               {% endfor %}
            
               <!-- Add more rows as needed -->
@@ -102,6 +104,7 @@
             <tbody>
               {% for j in ex_ch %}
               {% for i in j %}
+              {% if i.channelty == 'pre_defined' %}
               <tr>
                 <td class="text-center">
                   <input type="checkbox" name="selected_channels" value="{{ i.id }}">
@@ -136,6 +139,7 @@
                   {% endif %}
           
               </tr>
+              {% endif %}
               {% endfor %}
               {% endfor %}
               <!-- Add more rows as needed -->

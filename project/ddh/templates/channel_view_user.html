@@ -1,0 +1,89 @@
+{% extends 'home.html' %}
+{% block content %}
+<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+    <!-- Navbar -->
+
+    <!-- End Navbar -->
+    <div class="container-fluid py-4">
+      <div class="row">
+        <div class="col-12">
+          <div class="card my-4">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+              <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                <h6 class="text-white text-capitalize ps-3">PACK NAME : {{ fk.packname }}</h6>
+                <h6 class="text-white text-capitalize ps-3"> MRP : {{ fk.price }}</h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+   
+    </div>
+  </main>
+  <body>
+  
+    <div class="container mt-4">
+      <h2>AVAILABLE CHANNEL IN PACK : </h2>
+      <div class="row">
+        <div class="col">
+          <table class="table">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col" class="text-center">S.No</th>
+                <th scope="col" class="text-center">CHANNEL NAME</th>
+                <th scope="col" class="text-center">CHANNEL LANGUAGE</th>
+                <th scope="col" class="text-center">CHANNEL DESCRIPTION </th>
+                <th scope="col" class="text-center">COST/month</th>
+                <th scope="col" class="text-center">CHANNEL TYPE</th>
+              
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in exis_ch %}
+            
+              <tr>
+                <td class="text-center">
+                  <p class="text-xs font-weight-bold mb-0">{{ forloop.counter }} </p>
+                </td>
+                <td>
+                  <div class="d-flex px-4 py-1">
+                    <div class="d-flex flex-column justify-content-center">
+                      <h6 class="mb-0 text-sm">{{ i.channelname }} </h6>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <p class="text-xs font-weight-bold mb-0">{{ i.channellang }} </p>
+                </td>
+                <td class="text-center">
+                    <p class="text-xs font-weight-bold mb-0">{{ i.channeldes }} </p>
+                  </td>
+                  <td class="text-center">
+                    <p class="text-xs font-weight-bold mb-0">{{ i.channelamount }} </p>
+                  </td>
+                  {%  if i.channeltype == 'paid' %}
+                  <td class="text-center">
+                    <p class="text-xs font-weight-bold mb-0"><button class="btn" style="background-color:#bc8f8f;color:aliceblue;" > {{ i.channeltype }}</button> </p>
+                  </td>
+                  {% else %}
+                  <td class="text-center">
+                    <p class="text-xs font-weight-bold mb-0"><button class="btn" style="background-color:#9370db;color:rgb(246, 238, 238);"  >{{ i.channeltype }}</button> </p>
+                  </td>
+                  {% endif %}
+          
+              </tr>
+             
+              {% endfor %}
+           
+              <!-- Add more rows as needed -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+  
+    <!-- Bootstrap JS (Optional, for some components) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}
